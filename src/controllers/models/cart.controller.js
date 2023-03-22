@@ -87,7 +87,7 @@ const addProductToCart = async (req, res) => {
 
     console.log(cid)
     console.log(pid)
-    const result = await cartModel.updateOne({$and: [{_id: cid},{"products.product": pid}] },{$inc: { "products.$.quantity" : 1 }})
+    const result = await cartModel.updateOne({_id: cid, "products.product": pid},{$inc: { "products.$.quantity" : 1 }})
     const result2 = await cartModel.findOne({_id: cid,"products.product": pid}).lean().exec()
 
     console.log(result)
