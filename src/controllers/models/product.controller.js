@@ -62,13 +62,17 @@ const getProducts =  async (req, res) => {
 // Get product /api/products/:pid
 const getProduct =  async (req, res) => {
     const { pid } = req.params
-    const info = { status: 'success'}
+    const info = { 
+        status: 'success',
+        message: 'ok'
+    }
 
     try {
         info.product = await productModel.findById(pid).lean().exec()
     } catch (error) {
         info.status = 'error'
         info.product = {}
+        info.message = 'product id no found'
     }
     
     return res.json(info) 
@@ -77,10 +81,7 @@ const getProduct =  async (req, res) => {
 //Post for add product /api/products
 const addProduct =  async (req, res) => {
     const data = req.body
-    const info = {
-        status: '', 
-        message: ''
-    }
+    const info = {}
 
     try {
         const result = await productModel.create(data)
