@@ -91,7 +91,7 @@ const addProduct =  async (req, res) => {
     } catch (error) {
         info.status = 'error'
         info.message = 'the product could not be added check the data sent.'
-        info.id = 0
+        info.id = "0"
     }
 
     return res.json(info)
@@ -106,26 +106,42 @@ const updProduct =  async (req, res) => {
     if(pid === undefined || data === undefined || Object.entries(data).length === 0){
         info.status = 'error'
         info.message = 'verify that id or data, does not exist or is invalid'
+        info.modif -1
         return res.json(info)
     }
     
     try {
         const result = await productModel.updateOne({_id: pid}, data)
-        if(result.acknowledged){
+        
+        if(result.modifiedCount > 0){   
             info.status = 'success'
             info.message = `product whit id: ${pid} updated`
-        }else{
-            info.status = 'error'
+            info.modif = 1
+            return res.json(info)
+        }
+
+        if(result.matchedCount > 0 && result.modifiedCount === 0){
+            info.status = 'success'
             info.message = `product whit id: ${pid} not updated`
+            info.modif = 0
+            return res.json(info)
+        }
+
+        if(result.matchedCount === 0 ){
+            info.status = 'error'
+            info.message = `product whit id: ${pid} not found`
+            info.modif = -1
+            return res.json(info)
         }
         
     } catch (error) {
         console.log(error)
         info.status = "error"
         info.message = "could not update, id does not exist, or did not need to update."
+        info.modif = -1
+        return res.json(info)
     }
 
-    res.json(info)
 }
 
 //Delete product /api/products/:pid
@@ -139,15 +155,18 @@ const delProduct =  async (req, res) => {
         if(result.deletedCount > 0){
             info.status = 'success'
             info.message = `product whit id: ${pid} deleted`
+            info.remov = true
         }else{
             info.status = 'error'
             info.message = `no products have been removed`
+            info.remov = false
         }
         
     } catch (error) {
         console.log (error)
         info.status = 'error'
         info.message = 'could not delete, id does not exist.'
+        info.remov = false
     }
 
     return res.json(info)
