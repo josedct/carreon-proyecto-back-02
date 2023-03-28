@@ -81,4 +81,12 @@ const getViewCart = async (req, res) => {
 
 }
 
-module.exports = {getViewProducts, getViewProduct, getViewCart}
+const getLogin = async (req, res) => {
+    return res.render('login')
+}
+
+const getRegister = async (req, res) => {
+    return res.render('register')
+}
+
+module.exports = {getViewProducts, getViewProduct, getViewCart, getLogin, getRegister}

@@ -2,6 +2,9 @@ const express = require('express')
 const path = require('path')
 const handlebars = require('express-handlebars')
 const mongoose = require('mongoose')
+const session = require('express-session')
+const MongoStore = require('connect-mongo')
+
 const productRouter = require('./router/products.router')
 const cartRouter = require('./router/carts.router')
 const viewsRouter = require('./router/views.router')
@@ -15,6 +18,20 @@ server.use(express.static(path.join(__dirname,'public')))
 server.engine('handlebars', handlebars.engine())
 server.set('views', path.join(__dirname, 'views'))
 server.set('view engine', 'handlebars')
+
+server.use(session({
+    store: MongoStore.create({
+        mongoUrl: uri,
+        mongoOptions: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        },
+        ttl: 100
+    }),
+    secret: 'c0d3r',
+    resave: true,
+    saveUninitialized: true
+}))
 
 server.use('/api/products',productRouter)
 server.use('/api/carts',cartRouter)
