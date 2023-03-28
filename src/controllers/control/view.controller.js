@@ -1,3 +1,4 @@
+const currencyFormat = require("../../helpers/formatPrice")
 
 const getViewProducts = async (req, res) => {
 
@@ -5,11 +6,15 @@ const getViewProducts = async (req, res) => {
     const urlQuery = url.replace('/products','/api/products')
     const protocol = req.protocol
     const host = req.header('host')
+    let products
 
     try {
         const response = await fetch(`${protocol}://${host}${urlQuery}`)
-        const data = await response.json()
-        return res.json(data)
+        products = await response.json()
+        products.prevLink = products.prevLink.replace('/api/products','/products')
+        products.nextLink = products.nextLink.replace('/api/products','/products')
+        products.payload = products.payload.map(prod => ({...prod, price : currencyFormat(prod.price) }))
+        
     } catch (error) {
         products = {
             status: "error",
@@ -22,21 +27,58 @@ const getViewProducts = async (req, res) => {
             hasNextPage: false,
             prevLink: '',
             nextLink: ''
-        }
-        return res.json(data)    
+        } 
     }
-    
+
+    return res.render('products',{...products, title: "Lista de peliculas"})
+
 }
 
 const getViewProduct = async (req, res) => {
 
+    const url = req.originalUrl
+    const urlParam = url.replace('/product','/api/products')
+    const protocol = req.protocol
+    const host = req.header('host')
+    let data
+    
+    try {
+        const response = await fetch(`${protocol}://${host}${urlParam}`)
+        data = await response.json()
+    } catch (error) {
+        data = {
+            status : 'error',
+            product : {},
+            message : 'product id no found'
+        }
+    }
 
+    return res.render('product',{...data.product, title: data.product.title})
 
-    return
 }
 
 const getViewCart = async (req, res) => {
-    return
+    
+    const url = req.originalUrl
+    const urlParam = url.replace('/cart','/api/carts')
+    const protocol = req.protocol
+    const host = req.header('host')
+    let data
+    
+    try {
+        const response = await fetch(`${protocol}://${host}${urlParam}`)
+        data = await response.json()
+        
+    } catch (error) {
+        data = {
+            status : 'error',
+            payload : [],
+            message : 'cart id no found'
+        }
+    }
+
+    return res.render('cart', {...data, title:"Carrito de compra"})
+
 }
 
 module.exports = {getViewProducts, getViewProduct, getViewCart}

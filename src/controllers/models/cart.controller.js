@@ -8,7 +8,7 @@ const getCart = async (req, res) => {
 
     if(cid === undefined){
         info.status = "error"
-        info.payload = {}
+        info.payload = []
         info.message = "the cart id is not a correct number"
         return res.json(info)
     }
@@ -21,7 +21,7 @@ const getCart = async (req, res) => {
         info.message = "ok"
     } catch (error) {
         info.status = "error"
-        info.payload = {}
+        info.payload = []
         info.message = "cart id no found"
     }
 
