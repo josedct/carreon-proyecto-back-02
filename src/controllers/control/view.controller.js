@@ -30,7 +30,7 @@ const getViewProducts = async (req, res) => {
         } 
     }
 
-    return res.render('products',{...products, title: "Lista de peliculas"})
+    return res.render('products',{...products, title: "Lista de peliculas", email: req.session.user.email, role: req.session.user.role})
 
 }
 
@@ -82,11 +82,20 @@ const getViewCart = async (req, res) => {
 }
 
 const getLogin = async (req, res) => {
-    return res.render('login')
+    return res.render('login', {title: "Login"})
 }
 
 const getRegister = async (req, res) => {
-    return res.render('register')
+    return res.render('register', {title: "Registro de Usuario"})
 }
 
-module.exports = {getViewProducts, getViewProduct, getViewCart, getLogin, getRegister}
+const getError = async (req, res) => {
+    return res.render('error',{
+        titleError:'Titulo del error', 
+        error: 'Descripcion del error',
+        link: '/error',
+        textLink: 'Texto del link de error'
+    })
+}
+
+module.exports = {getViewProducts, getViewProduct, getViewCart, getLogin, getRegister,getError}

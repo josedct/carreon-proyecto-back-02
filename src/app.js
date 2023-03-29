@@ -7,6 +7,7 @@ const MongoStore = require('connect-mongo')
 
 const productRouter = require('./router/products.router')
 const cartRouter = require('./router/carts.router')
+const sessionRouter = require('./router/session.router')
 const viewsRouter = require('./router/views.router')
 
 const server = express()
@@ -35,6 +36,7 @@ server.use(session({
 
 server.use('/api/products',productRouter)
 server.use('/api/carts',cartRouter)
+server.use('/session',sessionRouter)
 server.use('/',viewsRouter)
 
 mongoose.connect(uri)
