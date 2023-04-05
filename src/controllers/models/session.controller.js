@@ -1,3 +1,4 @@
+const { hashPassword, isValidPassword } = require('./../../helpers/hashUtils')
 const userModel = require('./../../dao/models/user.model')
 
 const requireAuth = (req, res, next) => {
@@ -20,7 +21,7 @@ const getUser = async (req, res) => {
     let user
 
     try {
-        user = await userModel.findOne({email: userEmail, password: userPassword}).lean().exec()
+        user = await userModel.findOne({email: userEmail}).lean().exec()
     } catch (error) {
         return res.render('error',{
             titleError:'Usuario no encontrado', 
@@ -39,6 +40,15 @@ const getUser = async (req, res) => {
         })
     }
 
+    if (!isValidPassword(user, userPassword)) {
+        return res.render('error',{
+            titleError:'Password Incorrecto', 
+            error: 'Verifique el password que ingreso',
+            link: '/login',
+            textLink: 'Iniciar Sesion'
+        })
+    }
+
     const {email, role} = user
     
     req.session.user = {email, role}
@@ -47,9 +57,7 @@ const getUser = async (req, res) => {
 
 const addUser = async (req, res) => {
     const data = req.body
-    
-    console.log(data)
-
+    data.password = hashPassword(data.password)
     const role = data.email === 'adminCoder@coder.com' ? 'admin' : 'usuario'
     
     try {
