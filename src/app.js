@@ -4,6 +4,8 @@ const handlebars = require('express-handlebars')
 const mongoose = require('mongoose')
 const session = require('express-session')
 const MongoStore = require('connect-mongo')
+const passport = require('passport')
+const initializePassport = require('./config/passport.config')
 
 const productRouter = require('./router/products.router')
 const cartRouter = require('./router/carts.router')
@@ -33,6 +35,10 @@ server.use(session({
     resave: true,
     saveUninitialized: true
 }))
+
+initializePassport()
+server.use(passport.initialize())
+server.use(passport.session())
 
 server.use('/api/products',productRouter)
 server.use('/api/carts',cartRouter)

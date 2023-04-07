@@ -17,7 +17,7 @@ const existAuth = (req, res, next) => {
 }
 
 const getUser = async (req, res) => {
-    const { userEmail, userPassword } = req.body
+    /* const { userEmail, userPassword } = req.body
     let user
 
     try {
@@ -48,15 +48,15 @@ const getUser = async (req, res) => {
             textLink: 'Iniciar Sesion'
         })
     }
-
-    const {email, role} = user
+ */
+    const {email, role} = req.user
     
     req.session.user = {email, role}
     return res.redirect('/products')
 }
 
 const addUser = async (req, res) => {
-    const data = req.body
+    /* const data = req.body
     data.password = hashPassword(data.password)
     const role = data.email === 'adminCoder@coder.com' ? 'admin' : 'usuario'
     
@@ -69,7 +69,7 @@ const addUser = async (req, res) => {
             link: '/register',
             textLink: 'Registrarse'
         })
-    }
+    } */
 
     return res.redirect('/login')
 }
