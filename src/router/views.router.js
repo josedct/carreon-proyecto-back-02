@@ -1,6 +1,7 @@
 const {Router} = require('express')
 const {getViewProducts, getViewProduct, getViewCart, getLogin, getRegister, getError} = require('./../controllers/control/view.controller')
-const {delSession, requireAuth, existAuth} = require('./../controllers/models/session.controller')
+const {delSession, requireAuth, existAuth, getGitHub} = require('./../controllers/models/session.controller')
+const passport = require('passport')
 
 const router = Router()
 
@@ -17,5 +18,7 @@ router.get('/register', existAuth, getRegister)
 router.get('/error', getError)
 
 router.get('/logout', delSession)
+
+router.get('/github', passport.authenticate('github', { scope: ['user: email']}), getGitHub)
 
 module.exports = router

@@ -74,8 +74,19 @@ const addUser = async (req, res) => {
     return res.redirect('/login')
 }
 
+const getGitHub = (req, res) => {
+
+}
+
+const getUserGitHub = (req, res) => {
+    req.session.user = req.user
+    return res.redirect('/products')
+}
+
+
 const delSession = (req, res) => {
-    req.session.destroy(err => {
+    //req.session.destroy
+    req.logout(err => {
         if(err) {
             res.status(500).render('/error', {
                 titleError:'Sesión no terminada', 
@@ -87,4 +98,4 @@ const delSession = (req, res) => {
     })
 }
 
-module.exports = {getUser, addUser, delSession, requireAuth, existAuth}
+module.exports = {getUser, addUser, delSession, requireAuth, existAuth, getGitHub, getUserGitHub}
